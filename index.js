@@ -6,30 +6,15 @@ const incidentRoutes = require("./routes/incidentRoutes"); // Import incident ro
 
 const app = express();
 
-// Enable CORS for front-end interaction
-app.use(cors());
-const allowedOrigins = [
-  "http://localhost:3000",
-  "http://localhost:3001",
-  "https://cyberbullying-frontend.vercel.app/","https://cyberbullying-adminfrontend.vercel.app/"
-];
-
+// Enable CORS for all origins
 app.use(
   cors({
-    origin: (origin, callback) => {
-      // Allow requests with no origin (e.g., mobile apps, Postman)
-      if (!origin) return callback(null, true);
-
-      if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      } else {
-        return callback(new Error("Not allowed by CORS"));
-      }
-    },
-    methods: ["GET", "POST", "PATCH", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    origin: "*", // Allow all origins
+    methods: ["GET", "POST", "PATCH", "DELETE"], // Allowed request methods
+    allowedHeaders: ["Content-Type", "Authorization"], // Allowed headers
   })
 );
+
 // Middleware to parse JSON bodies
 app.use(express.json());
 
@@ -41,6 +26,7 @@ mongoose.connect(
   "mongodb+srv://guru:guru@cluster0.oowiasj.mongodb.net/CyberBullying",
   { useNewUrlParser: true, useUnifiedTopology: true }
 );
+
 const db = mongoose.connection;
 db.on("open", () => console.log("Database Connected"));
 db.on("error", (err) => console.log("Database Connection Error", err));
