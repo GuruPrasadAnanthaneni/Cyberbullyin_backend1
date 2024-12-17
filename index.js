@@ -8,7 +8,28 @@ const app = express();
 
 // Enable CORS for front-end interaction
 app.use(cors());
+const allowedOrigins = [
+  "http://localhost:3000",
+  "http://localhost:3001",
+  "https://cyberbullying-frontend.vercel.app/","https://cyberbullying-adminfrontend.vercel.app/"
+];
 
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // Allow requests with no origin (e.g., mobile apps, Postman)
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      } else {
+        return callback(new Error("Not allowed by CORS"));
+      }
+    },
+    methods: ["GET", "POST", "PATCH", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 // Middleware to parse JSON bodies
 app.use(express.json());
 
